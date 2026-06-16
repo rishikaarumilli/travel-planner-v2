@@ -1,6 +1,5 @@
 import express from "express";
 import path from "path";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 
@@ -641,9 +640,15 @@ function getFallbackTravelPlan(destination: string, days: number, people: number
 
 // Route: API to generate the main JSON plan
 app.post("/api/generate-plan", async (req, res) => {
-  const { destination, days, people } = req.body;
+  let destination = "your destination";
+  let days = 3;
+  let people = 2;
   try {
-    if (!destination || !days || !people) {
+    const body = req.body || {};
+    destination = body.destination || "";
+    days = Number(body.days) || 3;
+    people = Number(body.people) || 2;
+    if (!destination || !body.days || !body.people) {
       return res.status(400).json({ error: "Missing required fields: destination, days, people." });
     }
 
@@ -702,8 +707,11 @@ The client-side app will render this JSON neatly.`;
 
 // Route: Chatbot conversation proxy for following responses (e.g. day-wise plan requests)
 app.post("/api/chat", async (req, res) => {
-  const { messages, context } = req.body;
+  let context: any = null;
   try {
+    const body = req.body || {};
+    const { messages } = body;
+    context = body.context;
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: "Messages array is required." });
     }
@@ -888,22 +896,24 @@ function getDeterministicWeatherAdvisories(destination: string): WeatherAlertRes
 
 // Route: API to get live real-time weather alerts or seasonal warnings for a destination
 app.get("/api/weather-alerts", async (req, res) => {
-  const destination = req.query.destination as string;
-  if (!destination) {
-    return res.status(400).json({ error: "Missing destination query parameter." });
-  }
-
-  const cacheKey = destination.toLowerCase().trim();
-  const cachedVal = weatherAdvisoriesCache.get(cacheKey);
-  const now = Date.now();
-
-  // Return from in-memory cache if hit and not expired
-  if (cachedVal && now - cachedVal.timestamp < WEATHER_CACHE_EXPIRY_MS) {
-    console.log(`[Weather Alerts API] Cache hit for ${destination}`);
-    return res.json(cachedVal.data);
-  }
-
+  let destination = "your destination";
+  let cacheKey = "";
+  let now = Date.now();
   try {
+    destination = (req.query.destination as string) || "";
+    if (!destination) {
+      return res.status(400).json({ error: "Missing destination query parameter." });
+    }
+
+    cacheKey = destination.toLowerCase().trim();
+    now = Date.now();
+    const cachedVal = weatherAdvisoriesCache.get(cacheKey);
+
+    // Return from in-memory cache if hit and not expired
+    if (cachedVal && now - cachedVal.timestamp < WEATHER_CACHE_EXPIRY_MS) {
+      console.log(`[Weather Alerts API] Cache hit for ${destination}`);
+      return res.json(cachedVal.data);
+    }
     const prompt = `Find any real-time active weather alerts, warnings, extreme weather indices, heat index issues, storm forecasts, or seasonal travel warnings/hazards for "${destination}" as of June 2026. Provide a concise JSON response outlining whether there are active alerts or specific seasonal warnings, the alert severity level, a 1-2 sentence quick summary, an array of individual alerts or seasonal warnings, current temperature range, humidity, and safety tips for tourists.`;
     
     // Use retry/multi-model fallback helper to stay resilient to individual model rate limits & disruptions
@@ -948,6 +958,7 @@ app.get("/api/weather-alerts", async (req, res) => {
 // Vite & Static file handler setup
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",

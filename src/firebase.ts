@@ -5,7 +5,9 @@ import firebaseConfig from "../firebase-applet-config.json";
 
 // Initialize Firebase App and export standard services
 export const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId); /* CRITICAL setup configuration */
+export const db = (firebaseConfig.firestoreDatabaseId && firebaseConfig.firestoreDatabaseId !== "(default)")
+  ? getFirestore(app, firebaseConfig.firestoreDatabaseId)
+  : getFirestore(app); /* CRITICAL setup configuration */
 export const auth = getAuth(app);
 
 // Firestore operation type enum
