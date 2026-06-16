@@ -1,0 +1,101 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Auth helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isVerifiedUser(userId) {
+      return isOwner(userId) && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation helpers
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['name', 'email'])
+        && (data.keys().size() == 2 || (data.keys().size() == 3 && data.keys().hasAll(['preferences'])))
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 150
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 150
+        && (!data.keys().hasAll(['preferences']) || (data.preferences is string && data.preferences.size() <= 1000));
+    }
+
+    function isValidTravelPlan(data) {
+      return data.keys().hasAll(['userId', 'destinationName', 'days', 'people', 'planData', 'createdAt', 'updatedAt'])
+        && data.keys().size() == 7
+        && data.userId is string && data.userId.size() <= 128
+        && data.destinationName is string && data.destinationName.size() > 0 && data.destinationName.size() <= 150
+        && data.days is string && data.days.size() > 0 && data.days.size() <= 50
+        && data.people is string && data.people.size() > 0 && data.people.size() <= 50
+        && data.planData is map;
+    }
+
+    function isValidBooking(data) {
+      return data.keys().hasAll(['userId', 'planId', 'itemType', 'itemName', 'cost', 'createdAt'])
+        && (data.keys().size() == 6 || (data.keys().size() == 7 && data.keys().hasAll(['details'])))
+        && data.userId is string && data.userId.size() <= 128
+        && data.planId is string && data.planId.size() <= 128
+        && data.itemType is string && data.itemType.size() > 0 && data.itemType.size() <= 50
+        && data.itemName is string && data.itemName.size() > 0 && data.itemName.size() <= 200
+        && data.cost is string && data.cost.size() > 0 && data.cost.size() <= 100
+        && (!data.keys().hasAll(['details']) || (data.details is string && data.details.size() <= 500));
+    }
+
+    // Match blocks
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserProfile(incoming());
+      allow update: if isVerifiedUser(userId) && isValidUserProfile(incoming()) 
+                     && incoming().email == existing().email; // email is immutable
+      allow delete: if isOwner(userId);
+
+      // Travel plans subcollection
+      match /plans/{planId} {
+        allow read: if isVerifiedUser(userId) && isValidId(planId);
+        allow create: if isVerifiedUser(userId) && isValidId(planId) 
+                        && isValidTravelPlan(incoming())
+                        && incoming().userId == request.auth.uid
+                        && incoming().createdAt == request.time
+                        && incoming().updatedAt == request.time;
+        allow update: if isVerifiedUser(userId) && isValidId(planId)
+                        && isValidTravelPlan(incoming())
+                        && incoming().userId == existing().userId
+                        && incoming().createdAt == existing().createdAt
+                        && incoming().updatedAt == request.time;
+        allow delete: if isVerifiedUser(userId) && isValidId(planId);
+      }
+
+      // Bookings subcollection
+      match /bookings/{bookingId} {
+        allow read: if isVerifiedUser(userId) && isValidId(bookingId);
+        allow create: if isVerifiedUser(userId) && isValidId(bookingId)
+                        && isValidBooking(incoming())
+                        && incoming().userId == request.auth.uid
+                        && incoming().createdAt == request.time;
+        // Booking entries are immutable after creation
+        allow delete: if isVerifiedUser(userId) && isValidId(bookingId);
+      }
+    }
+  }
+}

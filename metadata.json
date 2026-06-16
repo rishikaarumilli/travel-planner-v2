@@ -1,0 +1,6 @@
+{
+  "name": "AI Travel Planner",
+  "description": "A smart, friendly AI travel planner assistant that helps you plan personalized trips with detailed structures and budgets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

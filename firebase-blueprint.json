@@ -1,0 +1,118 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Information about a registered traveler",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the user"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Verified email address"
+        },
+        "preferences": {
+          "type": "string",
+          "description": "Custom budget and travel preferences or travel styles"
+        }
+      },
+      "required": ["name", "email"]
+    },
+    "TravelPlanEntity": {
+      "title": "TravelPlanEntity",
+      "description": "A saved travel plan generated for the user",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The unique user id of the owner"
+        },
+        "destinationName": {
+          "type": "string",
+          "description": "The target city or destination name"
+        },
+        "days": {
+          "type": "string",
+          "description": "Number of days for the trip"
+        },
+        "people": {
+          "type": "string",
+          "description": "Number of travelers"
+        },
+        "budget": {
+          "type": "string",
+          "description": "Budget level or total estimate"
+        },
+        "planData": {
+          "type": "object",
+          "description": "The complete generated travel plan structure as an object"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of last edit"
+        }
+      },
+      "required": ["userId", "destinationName", "days", "people", "planData", "createdAt", "updatedAt"]
+    },
+    "BookingEntity": {
+      "title": "BookingEntity",
+      "description": "A booking item selection (hotel, transport, or local guide)",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The user who booked this item"
+        },
+        "planId": {
+          "type": "string",
+          "description": "The reference to the saved travel plan"
+        },
+        "itemType": {
+          "type": "string",
+          "description": "Type of booking (hotel, transport, guide)"
+        },
+        "itemName": {
+          "type": "string",
+          "description": "The name of the hotel, carrier, or guide option"
+        },
+        "cost": {
+          "type": "string",
+          "description": "Booking cost details"
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional booking metadata (e.g. platform, booking timing)"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of booking"
+        }
+      },
+      "required": ["userId", "planId", "itemType", "itemName", "cost", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Stores user demographic preferences and details"
+    },
+    "/users/{userId}/plans/{planId}": {
+      "schema": "TravelPlanEntity",
+      "description": "Stores individual generated travel/trip plans"
+    },
+    "/users/{userId}/bookings/{bookingId}": {
+      "schema": "BookingEntity",
+      "description": "Stores user bookings for transport, hotel, or guide selections"
+    }
+  }
+}
