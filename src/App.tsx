@@ -1365,63 +1365,65 @@ export default function App() {
       )}
 
       {/* Top Navigation Bar with Persistent account options */}
-      <header className="sticky top-0 z-40 bg-white border-b-4 border-brand-pink py-4 px-6 md:px-8 shadow-sm">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-brand-blue rounded-xl flex items-center justify-center text-white text-xl shadow-md transform -rotate-3 hover:rotate-3 transition-transform">
+      <header className="sticky top-0 z-40 bg-white border-b-4 border-brand-pink py-3 px-4 sm:px-6 md:px-8 shadow-sm">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4">
+          <div className="flex items-center gap-2.5 w-full md:w-auto justify-center md:justify-start">
+            <div className="w-9 h-9 bg-brand-blue rounded-xl flex items-center justify-center text-white text-lg shadow-md transform -rotate-3 hover:rotate-3 transition-transform shrink-0">
               🌍
             </div>
             <div>
-              <h1 className="text-2xl font-black text-brand-dark tracking-tight italic">
+              <h1 className="text-xl sm:text-2xl font-black text-brand-dark tracking-tight italic leading-tight">
                 VoyageAI <span className="text-brand-pink">Scout</span>
               </h1>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mt-1">
+              <p className="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mt-0.5 sm:mt-1">
                 Your Personal Trip Architect
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full md:w-auto justify-center md:justify-end">
             {(chatState.destination || plan) && (
-              <div className="flex items-center gap-2 text-xs font-bold text-white">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-bold text-white w-full sm:w-auto">
                 {chatState.destination && (
-                  <span className="flex items-center gap-1 bg-brand-green px-4 py-2 rounded-full shadow-sm text-brand-dark">
+                  <span className="flex items-center gap-1 bg-brand-green px-3 py-1.5 rounded-full shadow-sm text-brand-dark">
                     📍 {chatState.destination}
                   </span>
                 )}
                 {(chatState.days || chatState.people) && (
-                  <span className="flex items-center gap-1.5 bg-brand-blue px-4 py-2 rounded-full shadow-sm">
+                  <span className="flex items-center gap-1 bg-brand-blue px-3 py-1.5 rounded-full shadow-sm">
                     ⏳ {chatState.days ? `${chatState.days} Days` : ""} {chatState.people ? `| 👥 ${chatState.people} Travelers` : ""}
                   </span>
                 )}
               </div>
             )}
 
-            {/* Toggle dashboard sidebar button */}
-            <button
-              onClick={() => setShowDashboardDrawer(true)}
-              className="flex items-center gap-1.5 bg-[#6C5CE7] hover:bg-indigo-500 text-white border-2 border-brand-dark px-4 py-1.5 rounded-xl text-xs font-black transition-all shadow-[2px_2px_0px_0px_#2D3436] cursor-pointer"
-            >
-              👤 My Account & Profile
-            </button>
+            <div className="flex gap-2 w-full sm:w-auto mt-1 sm:mt-0">
+              {/* Toggle dashboard sidebar button */}
+              <button
+                onClick={() => setShowDashboardDrawer(true)}
+                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 bg-[#6C5CE7] hover:bg-indigo-500 text-white border-2 border-brand-dark px-3 py-2 rounded-xl text-[11px] sm:text-xs font-black transition-all shadow-[2px_2px_0px_0px_#2D3436] cursor-pointer"
+              >
+                👤 Profile
+              </button>
 
-            <button
-              onClick={handleReset}
-              className="flex items-center gap-1.5 bg-brand-yellow hover:bg-yellow-400 text-brand-dark border-2 border-brand-dark px-4 py-1.5 rounded-xl text-xs font-black transition-all shadow-[2px_2px_0px_0px_#2D3436] active:translate-y-[1px] active:shadow-0 cursor-pointer"
-            >
-              <RefreshCw size={12} className="stroke-[3px]" />
-              Reset Plan
-            </button>
+              <button
+                onClick={handleReset}
+                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 bg-brand-yellow hover:bg-yellow-400 text-brand-dark border-2 border-brand-dark px-3 py-2 rounded-xl text-[11px] sm:text-xs font-black transition-all shadow-[2px_2px_0px_0px_#2D3436] active:translate-y-[1px] active:shadow-0 cursor-pointer"
+              >
+                <RefreshCw size={11} className="stroke-[3px]" />
+                Reset Plan
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Panel Area: Split screen if plan exists, else single centered column */}
-      <main className="max-w-7xl mx-auto w-full flex-1 p-4 md:p-6 flex flex-col lg:flex-row gap-6 overflow-hidden">
+      <main className="max-w-7xl mx-auto w-full flex-1 p-3 sm:p-4 md:p-6 flex flex-col lg:flex-row gap-5 lg:gap-6 lg:overflow-hidden">
         
         {/* LEFT PANEL: Chat Window with Neo-Brutalist design */}
-        <section className={`flex flex-col bg-white border-4 border-brand-dark rounded-3xl shadow-[8px_8px_0px_0px_#2D3436] transition-all duration-300 overflow-hidden ${
-          plan ? "w-full lg:w-[430px] h-[550px] lg:h-auto" : "max-w-2xl mx-auto w-full h-[650px]"
+        <section className={`flex flex-col bg-white border-4 border-brand-dark rounded-3xl shadow-[6px_6px_0px_0px_#2D3436] sm:shadow-[8px_8px_0px_0px_#2D3436] transition-all duration-300 overflow-hidden ${
+          plan ? "w-full lg:w-[430px] h-[480px] sm:h-[550px] lg:h-auto" : "max-w-2xl mx-auto w-full h-[520px] sm:h-[650px]"
         }`}>
           {/* Chat Header */}
           <div className="bg-brand-dark text-white px-5 py-4 border-b-4 border-brand-dark flex items-center justify-between">
@@ -1707,9 +1709,9 @@ export default function App() {
         </section>
 
         {/* RIGHT PANEL: Dynamic Travel Map / Dashboard */}
-        <section className="flex-1 h-[650px] lg:h-auto min-w-0">
+        <section className="flex-1 h-auto lg:h-[800px] min-w-0">
           {plan ? (
-            <div className="flex flex-col h-full space-y-4">
+            <div className="flex flex-col h-auto lg:h-full space-y-4">
               
               {/* Floating Save Travel plan bar inside active dashboard */}
               <div className="bg-white border-4 border-brand-dark p-4 rounded-3xl shadow-[5px_5px_0px_0px_#2D3436] flex flex-wrap items-center justify-between gap-4">

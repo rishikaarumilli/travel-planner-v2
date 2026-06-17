@@ -318,7 +318,7 @@ export function TravelDashboard({ plan, onBookItem }: TravelDashboardProps) {
   const totalSum = chartData.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
-    <div className="bg-white border-4 border-brand-dark rounded-3xl shadow-[8px_8px_0px_0px_#2D3436] h-full flex flex-col overflow-hidden">
+    <div className="bg-white border-4 border-brand-dark rounded-3xl shadow-[6px_6px_0px_0px_#2D3436] sm:shadow-[8px_8px_0px_0px_#2D3436] h-auto lg:h-full flex flex-col lg:overflow-hidden">
       {/* Dashboard Header */}
       <div className="bg-white px-6 py-5 border-b-4 border-brand-pink">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -403,7 +403,7 @@ export function TravelDashboard({ plan, onBookItem }: TravelDashboardProps) {
       </div>
 
       {/* Structured Panel Content */}
-      <div className="p-6 flex-1 overflow-y-auto space-y-6 bg-[#F0F9FF]/20">
+      <div className="p-4 sm:p-6 flex-1 lg:overflow-y-auto space-y-5 sm:space-y-6 bg-[#F0F9FF]/20">
         
         {/* TAB 1: OVERVIEW */}
         {activeTab === "overview" && (
@@ -1420,13 +1420,13 @@ export function TravelDashboard({ plan, onBookItem }: TravelDashboardProps) {
                 <h3 className="text-xs font-black text-brand-dark uppercase tracking-widest font-display mb-3">
                   📊 Detailed Budget Category Summary Table
                 </h3>
-                <div className="overflow-hidden border-4 border-brand-dark rounded-3xl shadow-[5px_5px_0px_0px_#2D3436]">
-                <table className="min-w-full divide-y divide-brand-dark text-left text-xs bg-white">
-                  <thead className="bg-[#FFF4E0] border-b-2 border-brand-dark text-brand-dark font-black uppercase tracking-wider text-[10px]">
+                <div className="overflow-x-auto border-4 border-brand-dark rounded-3xl shadow-[5px_5px_0px_0px_#2D3436]">
+                <table className="min-w-[600px] sm:min-w-full divide-y divide-brand-dark text-left text-xs bg-white">
+                  <thead className="bg-[#FFF4E0] border-b-2 border-brand-dark text-brand-dark font-black uppercase tracking-wider text-[9px] sm:text-[10px]">
                     <tr>
-                      <th className="px-5 py-4">Expense Category</th>
-                      <th className="px-5 py-4 text-right">Sum Total ({currencyPreference === "preferred" ? (plan.isInternational ? "₹" : "$") : (plan.isInternational ? "$" : "₹")})</th>
-                      <th className="px-5 py-4 text-right">Per Person share ({currencyPreference === "preferred" ? (plan.isInternational ? "₹" : "$") : (plan.isInternational ? "$" : "₹")})</th>
+                      <th className="px-3 py-3 sm:px-5 sm:py-4">Expense Category</th>
+                      <th className="px-3 py-3 sm:px-5 sm:py-4 text-right">Sum Total ({currencyPreference === "preferred" ? (plan.isInternational ? "₹" : "$") : (plan.isInternational ? "$" : "₹")})</th>
+                      <th className="px-3 py-3 sm:px-5 sm:py-4 text-right">Per Person share ({currencyPreference === "preferred" ? (plan.isInternational ? "₹" : "$") : (plan.isInternational ? "$" : "₹")})</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y-2 divide-gray-100 text-[#2D3436] font-bold">
@@ -1445,7 +1445,7 @@ export function TravelDashboard({ plan, onBookItem }: TravelDashboardProps) {
 
                       return (
                         <tr key={idx} className="hover:bg-[#F0F9FF]/20 transition-all">
-                          <td className="px-5 py-4 font-bold text-brand-dark">
+                          <td className="px-3 py-3 sm:px-5 sm:py-4 font-bold text-brand-dark">
                             <div className="flex flex-col gap-1.5">
                               <div className="flex items-center gap-2 text-xs">
                                 <Icon size={14} className={`${row.accent} stroke-[2.5px]`} />
@@ -1466,24 +1466,24 @@ export function TravelDashboard({ plan, onBookItem }: TravelDashboardProps) {
                               </div>
                             </div>
                           </td>
-                          <td className="px-5 py-4 text-right font-black text-brand-dark text-sm vertical-align-middle shrink-0">
+                          <td className="px-3 py-3 sm:px-5 sm:py-4 text-right font-black text-brand-dark text-sm vertical-align-middle shrink-0">
                             {formatBudgetCost(row.cost.totalCount, budgetMultiplier, currencyPreference)}
                           </td>
-                          <td className="px-5 py-4 text-right font-bold text-gray-400 vertical-align-middle shrink-0">
+                          <td className="px-3 py-3 sm:px-5 sm:py-4 text-right font-bold text-gray-400 vertical-align-middle shrink-0">
                             {formatBudgetCost(row.cost.perPerson, budgetMultiplier, currencyPreference)}
                           </td>
                         </tr>
                       );
                     })}
                     <tr className="bg-brand-yellow/15 border-t-4 border-brand-dark font-black text-brand-dark text-sm">
-                      <td className="px-5 py-4 flex items-center gap-1.5 uppercase font-black text-[12px]">
+                      <td className="px-3 py-3 sm:px-5 sm:py-4 flex items-center gap-1.5 uppercase font-black text-[11px] sm:text-[12px]">
                         <Sparkles size={14} className="text-brand-pink stroke-[3px]" />
                         GRAND TOTAL SUM
                       </td>
-                      <td className="px-5 py-4 text-right font-extrabold text-brand-pink text-base">
+                      <td className="px-3 py-3 sm:px-5 sm:py-4 text-right font-extrabold text-brand-pink text-sm sm:text-base">
                         {formatBudgetCost(plan.budgetBreakdown.grandTotal.totalCount, budgetMultiplier, currencyPreference)}
                       </td>
-                      <td className="px-5 py-4 text-right font-bold text-gray-500 text-xs">
+                      <td className="px-3 py-3 sm:px-5 sm:py-4 text-right font-bold text-gray-500 text-[11px] sm:text-xs">
                         {formatBudgetCost(plan.budgetBreakdown.grandTotal.perPerson, budgetMultiplier, currencyPreference)}
                       </td>
                     </tr>
